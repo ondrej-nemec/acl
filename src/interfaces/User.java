@@ -1,6 +1,6 @@
 package interfaces;
 
-import java.util.Set;
+import java.util.List;
 
 public interface User {
 
@@ -8,6 +8,8 @@ public interface User {
 	
 	public int getRank();
 	
-	public Set<Role> getRoles();
+	public List<Role> getRoles();
+	
+	public boolean equals(User user);
 	
 }

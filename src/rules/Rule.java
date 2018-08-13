@@ -1,33 +1,32 @@
-package roles;
+package rules;
 
 import java.io.Serializable;
 
-import interfaces.Action;
+import helper.Action;
 import interfaces.Destination;
-import interfaces.User;
+import rules.Rule;
 
-public class Rule implements Serializable {
+public class Rule<T> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private User who;
+	private T who;
 	
 	private Destination where;
 	
 	private Action what;
 
-	public Rule(User who, Destination where, Action what) {
-		super();
+	public Rule(T who, Destination where, Action what) {
 		this.who = who;
 		this.where = where;
 		this.what = what;
 	}
 
-	public User getWho() {
+	public T getWho() {
 		return who;
 	}
 
-	public void setWho(User who) {
+	public void setWho(T who) {
 		this.who = who;
 	}
 
@@ -60,10 +59,10 @@ public class Rule implements Serializable {
 	public boolean equals(Object o) {
 		if (!(o instanceof Rule))
 			return false;
-		return equals((Rule)o);
+		return equals((Rule<?>)o);
 	}
 	
-	public boolean equals(Rule r) {
+	public boolean equals(Rule<T> r) {
 		if (!who.equals(r.who))
 			return false;
 		if (!where.equals(r.where))

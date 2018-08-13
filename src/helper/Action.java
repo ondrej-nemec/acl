@@ -1,4 +1,4 @@
-package interfaces;
+package helper;
 
 public enum Action {
 	UNDEFINED,
