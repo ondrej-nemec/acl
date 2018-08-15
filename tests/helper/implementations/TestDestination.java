@@ -1,8 +1,8 @@
 package helper.implementations;
 
-import interfaces.Destination;
+import interfaces.DestinationInterface;
 
-public class TestDestination implements Destination {
+public class TestDestination implements DestinationInterface {
 
 	private String id;
 	
@@ -16,8 +16,12 @@ public class TestDestination implements Destination {
 	}
 
 	@Override
-	public boolean equals(Destination destination) {
+	public boolean equals(DestinationInterface destination) {
 		return id.equals(destination.getId());
 	}
 
+	@Override
+	public String toString() {
+		return id;
+	}
 }

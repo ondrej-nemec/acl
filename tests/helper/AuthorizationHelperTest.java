@@ -1,11 +1,10 @@
 package helper;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -14,21 +13,18 @@ import org.junit.runners.Parameterized.Parameters;
 import exception.AccessDeniedException;
 import helper.implementations.TestDestination;
 import helper.implementations.TestRole;
-import helper.implementations.TestRules;
 import helper.implementations.TestUser;
-import interfaces.Destination;
-import interfaces.Role;
-import interfaces.User;
-import rules.RuleForRole;
-import rules.RuleForUser;
+import interfaces.DestinationInterface;
+import interfaces.UserInterface;
 import rules.Rules;
+import rules.Status;
 
 @RunWith(Parameterized.class)
 public class AuthorizationHelperTest {
 
-	private User user;
+	private UserInterface user;
 	
-	private Destination dest;
+	private DestinationInterface dest;
 	
 	private Action act;
 	
@@ -36,7 +32,7 @@ public class AuthorizationHelperTest {
 	
 	private AuthorizationHelper helper = new AuthorizationHelper(getRules());
 
-	public AuthorizationHelperTest(User user, Destination dest, Action act, boolean isAlloved) {
+	public AuthorizationHelperTest(UserInterface user, DestinationInterface dest, Action act, boolean isAlloved) {
 		this.user = user;
 		this.dest = dest;
 		this.act = act;
@@ -49,116 +45,143 @@ public class AuthorizationHelperTest {
 				isAlloved,
 				helper.isAllowed(user, dest, act)
 		);
-		fail();
 	}
 	
 	@Test(expected=AccessDeniedException.class)
 	public void testThrowIfIsNotAllowedThrows() throws AccessDeniedException {
-		helper.throwIfIsNotAllowed(users().get(2), destinations().get(0), Action.READ);
+		helper.throwIfIsNotAllowed(
+				new TestUser("forbidden", 0, Arrays.asList(
+				)),
+				new TestDestination("main page"),
+				Action.READ
+		);
 	}
 	
 	@Test
 	public void testThrowIfIsNotAllowedWorks() {
 		try {
-			helper.throwIfIsNotAllowed(users().get(2), destinations().get(0), Action.READ);
+			helper.throwIfIsNotAllowed(
+					new TestUser("userId", 0, Arrays.asList(
+							)),
+					new TestDestination("list"),
+					Action.READ
+				);
 		} catch (AccessDeniedException e) {
-			e.printStackTrace();
 			fail();
 		}
 		
 	}
 	
 	private Rules getRules() {
-		return new TestRules(
-				Arrays.asList(
-						new RuleForUser(users().get(2), destinations().get(0), Action.FORBIDDEN),
-						new RuleForUser(users().get(2), destinations().get(1), Action.FORBIDDEN),
-						new RuleForUser(users().get(2), destinations().get(2), Action.FORBIDDEN),
-						new RuleForUser(users().get(2), destinations().get(3), Action.FORBIDDEN),
-						new RuleForUser(users().get(2), destinations().get(4), Action.FORBIDDEN),
-						new RuleForUser(users().get(2), destinations().get(5), Action.FORBIDDEN),
-						
-						new RuleForUser(users().get(3), destinations().get(3), Action.DELETE)
-					),
-				Arrays.asList(
-						new RuleForRole(roles().get(1), destinations().get(3), Action.READ),
-						new RuleForRole(roles().get(1), destinations().get(4), Action.READ),
-						new RuleForRole(roles().get(1), destinations().get(5), Action.READ),
-
-						new RuleForRole(roles().get(2), destinations().get(3), Action.UPDATE),
-						new RuleForRole(roles().get(2), destinations().get(4), Action.UPDATE),
-						new RuleForRole(roles().get(2), destinations().get(5), Action.UPDATE)
-					),
-				null,
-				/*
-				Arrays.asList(
-						new RuleForUser(null, null, null)
-					),*/
-				Arrays.asList(
-						new RuleForRole(roles().get(3), destinations().get(3), Action.ADMIN)
-					)
-				);
+		Rules mock = mock(Rules.class);
+		
+		when(mock.getRuleUserId("undefined", "main page", Action.READ)).thenReturn(Status.UNSPECIFIED);
+		when(mock.getRuleUserRank(0, "main page", Action.READ)).thenReturn(Status.UNSPECIFIED);
+		when(mock.getRuleRoleId("undefinedR", "main page", Action.READ)).thenReturn(Status.UNSPECIFIED);
+		when(mock.getRuleRoleRank(0, "main page", Action.READ)).thenReturn(Status.UNSPECIFIED);
+		
+		when(mock.getRuleUserId("forbidden", "main page", Action.READ)).thenReturn(Status.DISALLOWED);
+		/******/
+		when(mock.getRuleUserId("userId", "list", Action.READ)).thenReturn(Status.ALLOWED);
+		
+		when(mock.getRuleUserId("user rank", "list", Action.READ)).thenReturn(Status.UNSPECIFIED);
+		when(mock.getRuleUserRank(30, "list", Action.READ)).thenReturn(Status.ALLOWED);
+		
+		when(mock.getRuleUserId("role id", "list", Action.READ)).thenReturn(Status.UNSPECIFIED);
+		when(mock.getRuleUserRank(0, "list", Action.READ)).thenReturn(Status.UNSPECIFIED);
+		when(mock.getRuleRoleId("roleId", "list", Action.READ)).thenReturn(Status.ALLOWED);
+		
+		when(mock.getRuleUserId("role rank", "list", Action.READ)).thenReturn(Status.UNSPECIFIED);
+		when(mock.getRuleUserRank(0, "list", Action.READ)).thenReturn(Status.UNSPECIFIED);
+		when(mock.getRuleRoleId("roleRank", "list", Action.READ)).thenReturn(Status.UNSPECIFIED);
+		when(mock.getRuleRoleRank(30, "list", Action.READ)).thenReturn(Status.ALLOWED);
+		/************/
+		when(mock.getRuleUserId("oneRoleAllowedSecondNot", "article", Action.READ)).thenReturn(Status.UNSPECIFIED);
+		when(mock.getRuleUserRank(0, "article", Action.READ)).thenReturn(Status.UNSPECIFIED);
+		when(mock.getRuleRoleId("allowed", "article", Action.READ)).thenReturn(Status.ALLOWED);
+		when(mock.getRuleRoleId("disallowed", "article", Action.READ)).thenReturn(Status.DISALLOWED);
+		
+		when(mock.getRuleUserId("disallowed", "article", Action.READ)).thenReturn(Status.DISALLOWED);
+		return mock;
 	}
+
 	
 	@Parameters
 	public static Collection<Object[]> getDataSet() {
 		return Arrays.asList(
 				new Object[]{
-						users().get(2), destinations().get(5), Action.READ, false,
-					},
+					new TestUser("undefined", 0, Arrays.asList(
+							new TestRole("undefinedR", 0)
+							)),
+					new TestDestination("main page"),
+					Action.READ,
+					false
+				},
 				new Object[]{
-						users().get(0), destinations().get(5), Action.ADMIN, false,
-					},
+					new TestUser("forbidden", 0, Arrays.asList(
+							)),
+					new TestDestination("main page"),
+					Action.READ,
+					false
+				},
+				/**********/
 				new Object[]{
-						users().get(4), destinations().get(3), Action.DELETE, false,
-					},
+					new TestUser("userId", 0, Arrays.asList(
+							)),
+					new TestDestination("list"),
+					Action.READ,
+					true
+				},
 				new Object[]{
-						users().get(3), destinations().get(3), Action.DELETE, true,
-					},
+					new TestUser("user rank", 30, Arrays.asList(
+							)),
+					new TestDestination("list"),
+					Action.READ,
+					true
+				},
 				new Object[]{
-						users().get(5), destinations().get(3), Action.DELETE, true,
-					}
-				);
-	}
+					new TestUser("role id", 0, Arrays.asList(
+							new TestRole("roleId", 0)
+							)),
+					new TestDestination("list"),
+					Action.READ,
+					true
+				},
+				new Object[]{
+					new TestUser("role rank", 0, Arrays.asList(
+							new TestRole("roleRank", 30)
+							)),
+					new TestDestination("list"),
+					Action.READ,
+					true
+				},
+				/*************/
+				new Object[]{
+					new TestUser("userId", 0, Arrays.asList(
+							new TestRole("undefinedR", 0)
+							)),
+					new TestDestination("list"),
+					Action.READ,
+					true
+				},
+				new Object[]{
+					new TestUser("oneRoleAllowedSecondNot", 0, Arrays.asList(
+							new TestRole("allowed", 0),
+							new TestRole("disallowed", 0)
+							)),
+					new TestDestination("article"),
+					Action.READ,
+					true
+				},
+				new Object[]{
+					new TestUser("disallowed", 0, Arrays.asList(
+							new TestRole("allowed", 0)
+							)),
+					new TestDestination("article"),
+					Action.READ,
+					false
+				}
+			);
+		}
 	
-	private static List<User> users() {
-		return Arrays.asList(
-				new TestUser("admin", 100, roles()),
-				new TestUser("IT manager", 50, Arrays.asList(
-						roles().get(1), roles().get(2)
-						)),
-				new TestUser("guest", 0, Arrays.asList(
-							roles().get(0)
-						)),
-				new TestUser("Programmer", 40, Arrays.asList(
-						roles().get(1)
-					)),
-				new TestUser("Web-designer", 20, Arrays.asList(
-						roles().get(1)
-					)),
-				new TestUser("DB-admin", 30, Arrays.asList(
-						roles().get(1), roles().get(3)
-					))
-			);
-	}
-	 //TODO destination -> rank, this destination and less/more
-	private static List<Destination> destinations() {
-		return Arrays.asList(
-				new TestDestination("home page"),
-				new TestDestination("articles"),
-				new TestDestination("articles.description"),
-				new TestDestination("articles.description.no1"),
-				new TestDestination("articles.description.no2"),
-				new TestDestination("articles.description.no3")
-			);
-	}
-	
-	private static List<Role> roles() {
-		return Arrays.asList(
-				new TestRole("guest", 0),
-				new TestRole("it-group", 10),
-				new TestRole("managers", 20),
-				new TestRole("owners", 30)
-			);
-	}
 }

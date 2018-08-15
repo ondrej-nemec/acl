@@ -2,18 +2,18 @@ package helper.implementations;
 
 import java.util.List;
 
-import interfaces.Role;
-import interfaces.User;
+import interfaces.RoleInterface;
+import interfaces.UserInterface;
 
-public class TestUser implements User{
+public class TestUser implements UserInterface{
 
 	private String id;
 	
 	private int rank;
 	
-	private List<Role> roles;
+	private List<RoleInterface> roles;
 	
-	public TestUser(String id, int rank, List<Role> roles) {
+	public TestUser(String id, int rank, List<RoleInterface> roles) {
 		this.id = id;
 		this.rank = rank;
 		this.roles = roles;
@@ -30,13 +30,16 @@ public class TestUser implements User{
 	}
 
 	@Override
-	public List<Role> getRoles() {
+	public List<RoleInterface> getRoles() {
 		return roles;
 	}
 
 	@Override
-	public boolean equals(User user) {
+	public boolean equals(UserInterface user) {
 		return id.equals(user.getId());
 	}
-
+	@Override
+	public String toString() {
+		return id;
+	}
 }
