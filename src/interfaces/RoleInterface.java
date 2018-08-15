@@ -1,10 +1,10 @@
 package interfaces;
 
-public interface Role {
+public interface RoleInterface {
 
 	public String getId();
 	
 	public int getRank();
 	
-	public boolean equals(Role role);
+	public boolean equals(RoleInterface role);
 }

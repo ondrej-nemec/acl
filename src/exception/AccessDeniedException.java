@@ -1,8 +1,8 @@
 package exception;
 
 import helper.Action;
-import interfaces.Destination;
-import interfaces.User;
+import interfaces.DestinationInterface;
+import interfaces.UserInterface;
 
 public class AccessDeniedException extends Exception{
 
@@ -12,7 +12,7 @@ public class AccessDeniedException extends Exception{
 		super();
 	}
 	
-	public AccessDeniedException(User user, Destination destination, Action action) {
+	public AccessDeniedException(UserInterface user, DestinationInterface destination, Action action) {
 		super(user + ":" + destination + ":" + action);
 	}
 }
