@@ -1,6 +1,7 @@
-package rules;
+package interfaces;
 
 import helper.Action;
+import helper.Status;
 
 public interface Rules {
 	

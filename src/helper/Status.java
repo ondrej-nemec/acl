@@ -1,4 +1,4 @@
-package rules;
+package helper;
 
 public enum Status {
 	ALLOWED,

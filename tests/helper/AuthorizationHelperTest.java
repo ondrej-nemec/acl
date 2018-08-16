@@ -15,9 +15,8 @@ import helper.implementations.TestDestination;
 import helper.implementations.TestRole;
 import helper.implementations.TestUser;
 import interfaces.DestinationInterface;
+import interfaces.Rules;
 import interfaces.UserInterface;
-import rules.Rules;
-import rules.Status;
 
 @RunWith(Parameterized.class)
 public class AuthorizationHelperTest {

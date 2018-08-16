@@ -7,9 +7,8 @@ import java.util.logging.Logger;
 import exception.AccessDeniedException;
 import interfaces.DestinationInterface;
 import interfaces.RoleInterface;
+import interfaces.Rules;
 import interfaces.UserInterface;
-import rules.Rules;
-import rules.Status;
 
 public class AuthorizationHelper {
 
