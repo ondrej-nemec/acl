@@ -4,8 +4,8 @@
 * [Description](#description)
 * [Get library](#how-to-install)
 * [Usage](#usage)
-	 * [AuthorizationHelper]
-	 * [Interfaces]
+	 * [AuthorizationHelper](#authorizationhelper)
+	 * [Interfaces](#interfaces)
 	 * [Rules](#rules)
 
 ## Description
