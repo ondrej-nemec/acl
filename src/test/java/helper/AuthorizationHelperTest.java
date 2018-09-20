@@ -7,8 +7,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
 import exception.AccessDeniedException;
 import helper.implementations.TestDestination;
@@ -17,37 +15,102 @@ import helper.implementations.TestUser;
 import interfaces.DestinationInterface;
 import interfaces.Rules;
 import interfaces.UserInterface;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 
-@RunWith(Parameterized.class)
+@RunWith(JUnitParamsRunner.class)
 public class AuthorizationHelperTest {
 
-	private UserInterface user;
-	
-	private DestinationInterface dest;
-	
-	private Action act;
-	
-	private boolean isAlloved;
-	
-	private AuthorizationHelper helper = new AuthorizationHelper(getRules());
-
-	public AuthorizationHelperTest(UserInterface user, DestinationInterface dest, Action act, boolean isAlloved) {
-		this.user = user;
-		this.dest = dest;
-		this.act = act;
-		this.isAlloved = isAlloved;
-	}
-
 	@Test
-	public void testIsAllowedWorks() {
+	@Parameters
+	public void testIsAllowedWorks(UserInterface user, DestinationInterface dest, Action act, boolean isAllowed) {
+		AuthorizationHelper helper = new AuthorizationHelper(getRules());
 		assertEquals(
-				isAlloved,
+				isAllowed,
 				helper.isAllowed(user, dest, act)
 		);
 	}
 	
+	public Object[] parametersForTestIsAllowedWorks() {
+		return new Object[] {
+				new Object[]{
+						new TestUser("undefined", 0, Arrays.asList(
+								new TestRole("undefinedR", 0)
+								)),
+						new TestDestination("main page"),
+						Action.READ,
+						false
+					},
+					new Object[]{
+						new TestUser("forbidden", 0, Arrays.asList(
+								)),
+						new TestDestination("main page"),
+						Action.READ,
+						false
+					},
+					/**********/
+					new Object[]{
+						new TestUser("userId", 0, Arrays.asList(
+								)),
+						new TestDestination("list"),
+						Action.READ,
+						true
+					},
+					new Object[]{
+						new TestUser("user rank", 30, Arrays.asList(
+								)),
+						new TestDestination("list"),
+						Action.READ,
+						true
+					},
+					new Object[]{
+						new TestUser("role id", 0, Arrays.asList(
+								new TestRole("roleId", 0)
+								)),
+						new TestDestination("list"),
+						Action.READ,
+						true
+					},
+					new Object[]{
+						new TestUser("role rank", 0, Arrays.asList(
+								new TestRole("roleRank", 30)
+								)),
+						new TestDestination("list"),
+						Action.READ,
+						true
+					},
+					/*************/
+					new Object[]{
+						new TestUser("userId", 0, Arrays.asList(
+								new TestRole("undefinedR", 0)
+								)),
+						new TestDestination("list"),
+						Action.READ,
+						true
+					},
+					new Object[]{
+						new TestUser("oneRoleAllowedSecondNot", 0, Arrays.asList(
+								new TestRole("allowed", 0),
+								new TestRole("disallowed", 0)
+								)),
+						new TestDestination("article"),
+						Action.READ,
+						true
+					},
+					new Object[]{
+						new TestUser("disallowed", 0, Arrays.asList(
+								new TestRole("allowed", 0)
+								)),
+						new TestDestination("article"),
+						Action.READ,
+						false
+					}
+			};
+	}
+	
 	@Test(expected=AccessDeniedException.class)
 	public void testThrowIfIsNotAllowedThrows() throws AccessDeniedException {
+		AuthorizationHelper helper = new AuthorizationHelper(getRules());
 		helper.throwIfIsNotAllowed(
 				new TestUser("forbidden", 0, Arrays.asList(
 				)),
@@ -58,6 +121,7 @@ public class AuthorizationHelperTest {
 	
 	@Test
 	public void testThrowIfIsNotAllowedWorks() {
+		AuthorizationHelper helper = new AuthorizationHelper(getRules());
 		try {
 			helper.throwIfIsNotAllowed(
 					new TestUser("userId", 0, Arrays.asList(
@@ -105,81 +169,9 @@ public class AuthorizationHelperTest {
 	}
 
 	
-	@Parameters
 	public static Collection<Object[]> getDataSet() {
 		return Arrays.asList(
-				new Object[]{
-					new TestUser("undefined", 0, Arrays.asList(
-							new TestRole("undefinedR", 0)
-							)),
-					new TestDestination("main page"),
-					Action.READ,
-					false
-				},
-				new Object[]{
-					new TestUser("forbidden", 0, Arrays.asList(
-							)),
-					new TestDestination("main page"),
-					Action.READ,
-					false
-				},
-				/**********/
-				new Object[]{
-					new TestUser("userId", 0, Arrays.asList(
-							)),
-					new TestDestination("list"),
-					Action.READ,
-					true
-				},
-				new Object[]{
-					new TestUser("user rank", 30, Arrays.asList(
-							)),
-					new TestDestination("list"),
-					Action.READ,
-					true
-				},
-				new Object[]{
-					new TestUser("role id", 0, Arrays.asList(
-							new TestRole("roleId", 0)
-							)),
-					new TestDestination("list"),
-					Action.READ,
-					true
-				},
-				new Object[]{
-					new TestUser("role rank", 0, Arrays.asList(
-							new TestRole("roleRank", 30)
-							)),
-					new TestDestination("list"),
-					Action.READ,
-					true
-				},
-				/*************/
-				new Object[]{
-					new TestUser("userId", 0, Arrays.asList(
-							new TestRole("undefinedR", 0)
-							)),
-					new TestDestination("list"),
-					Action.READ,
-					true
-				},
-				new Object[]{
-					new TestUser("oneRoleAllowedSecondNot", 0, Arrays.asList(
-							new TestRole("allowed", 0),
-							new TestRole("disallowed", 0)
-							)),
-					new TestDestination("article"),
-					Action.READ,
-					true
-				},
-				new Object[]{
-					new TestUser("disallowed", 0, Arrays.asList(
-							new TestRole("allowed", 0)
-							)),
-					new TestDestination("article"),
-					Action.READ,
-					false
-				}
+				
 			);
 		}
 	
