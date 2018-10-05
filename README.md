@@ -1,5 +1,6 @@
 # Access control list
-**Newest version:** 1.0
+
+[![](https://jitpack.io/v/ondrej-nemec/acl.svg)](https://jitpack.io/#ondrej-nemec/acl)
 
 * [Description](#description)
 * [Get library](#how-to-install)
@@ -13,14 +14,14 @@ Simply package providing authorizations. You just define rules and hierarchy. [S
 ## How to install
 ### Download:
 
-<a href="https://ondrej-nemec.github.io/download/acl-1.0.jar" target=_blank>Download jar</a>
+<a href="https://ondrej-nemec.github.io/download/acl-1.1.jar" target=_blank>Download jar</a>
 ### Maven:
 
 ```xml
 <dependency>
   <groupId>io.github.ondrej-nemec.acl</groupId>
   <artifactId>acl</artifactId>
-  <version>1.0</version>
+  <version>1.1</version>
 </dependency>
 ```
 
