@@ -1,7 +1,7 @@
 # Access control list
 
 [![](https://jitpack.io/v/ondrej-nemec/acl.svg)](https://jitpack.io/#ondrej-nemec/acl)
-[![MIT License](http://img.shields.io/badge/license-MIT-green.svg) ](https://github.com/ondrej-nemec/acl/LICENSE)
+[![MIT License](http://img.shields.io/badge/license-MIT-green.svg) ](https://github.com/ondrej-nemec/acl/blob/master/LICENSE)
 
 * [Description](#description)
 * [Get library](#how-to-install)
