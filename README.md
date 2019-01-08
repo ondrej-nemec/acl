@@ -15,7 +15,7 @@ Simply package providing authorizations. You just define rules and hierarchy. [S
 ## How to install
 ### Download:
 
-<a href="https://ondrej-nemec.github.io/download/acl-1.1.jar" target=_blank>Download jar</a>
+<a href="https://ondrej-nemec.github.io/download/acl-1.1.1.jar" target=_blank>Download jar</a>
 ### Maven:
 
 After `build` tag:
@@ -32,7 +32,7 @@ And to `dependencies`:
 <dependency>
   <groupId>com.github.ondrej-nemec</groupId>
   <artifactId>acl</artifactId>
-  <version>v1.1</version>
+  <version>v1.1.1</version>
 </dependency>
 ```
 
@@ -49,7 +49,7 @@ boolean isAllowed(final UserInterface who, final DestinationInterface where, fin
 
 void throwIfIsNotAllowed(final UserInterface who, final DestinationInterface where, final Action what) throws AccessDeniedException;
 ```
-If logger is specified, if someone call some from previous method, INFO will be logged with 'who', 'where' and 'what'. If no rule for user is found, WARNING will be logged.
+If logger is specified, if someone call some from previous method, FINEST will be logged with 'who', 'where' and 'what'. If no rule for user is found, WARNING will be logged.
 **Order for searching right rule for user:**
 1. rule for exactly this user
 2. rule for this user and every with higher rank

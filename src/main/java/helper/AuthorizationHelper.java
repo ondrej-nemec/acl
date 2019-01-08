@@ -27,7 +27,7 @@ public class AuthorizationHelper {
 	
 	public boolean isAllowed(final UserInterface who, final DestinationInterface where, final Action what) {
 		if (logger != null)
-			logger.log(Level.INFO, "Access required: " + who + " -> " + where + " -> " + what);
+			logger.log(Level.FINEST, "Access required: " + who + " -> " + where + " -> " + what);
 		
 		Status ruleUserId = rules.getRuleUserId(who.getId(), where.getId(), what);
 		Status ruleUserRank = rules.getRuleUserRank(who.getRank(), where.getId(), what);

@@ -120,19 +120,15 @@ public class AuthorizationHelperTest {
 	}
 	
 	@Test
-	public void testThrowIfIsNotAllowedWorks() {
+	public void testThrowIfIsNotAllowedNotThrowsWhenUserIsAllowed() throws AccessDeniedException {
 		AuthorizationHelper helper = new AuthorizationHelper(getRules());
-		try {
-			helper.throwIfIsNotAllowed(
-					new TestUser("userId", 0, Arrays.asList(
-							)),
-					new TestDestination("list"),
-					Action.READ
-				);
-		} catch (AccessDeniedException e) {
-			fail();
-		}
-		
+		helper.throwIfIsNotAllowed(
+				new TestUser("userId", 0, Arrays.asList(
+						)),
+				new TestDestination("list"),
+				Action.READ
+		);
+		assertTrue(true);
 	}
 	
 	private Rules getRules() {
