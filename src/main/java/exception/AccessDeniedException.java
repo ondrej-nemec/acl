@@ -1,8 +1,8 @@
 package exception;
 
 import helper.Action;
-import interfaces.DestinationInterface;
-import interfaces.UserInterface;
+import interfaces.AclDestination;
+import interfaces.AclUser;
 
 public class AccessDeniedException extends Exception{
 
@@ -12,7 +12,7 @@ public class AccessDeniedException extends Exception{
 		super();
 	}
 	
-	public AccessDeniedException(UserInterface user, DestinationInterface destination, Action action) {
+	public AccessDeniedException(AclUser user, AclDestination destination, Action action) {
 		super(user + ":" + destination + ":" + action);
 	}
 }

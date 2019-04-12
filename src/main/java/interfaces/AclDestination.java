@@ -1,10 +1,10 @@
 package interfaces;
 
-public interface DestinationInterface {
+public interface AclDestination {
 	//TODO  level this destination and less/more
 	
 	public String getId();
 	
-	public boolean equals(DestinationInterface destination);
+	public boolean equals(AclDestination destination);
 
 }

@@ -1,8 +1,8 @@
 package helper.implementations;
 
-import interfaces.DestinationInterface;
+import interfaces.AclDestination;
 
-public class TestDestination implements DestinationInterface {
+public class TestDestination implements AclDestination {
 
 	private String id;
 	
@@ -16,7 +16,7 @@ public class TestDestination implements DestinationInterface {
 	}
 
 	@Override
-	public boolean equals(DestinationInterface destination) {
+	public boolean equals(AclDestination destination) {
 		return id.equals(destination.getId());
 	}
 

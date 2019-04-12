@@ -3,7 +3,7 @@ package interfaces;
 import helper.Action;
 import helper.Status;
 
-public interface Rules {
+public interface AclRules {
 	
 	default Status getRuleUserId(String userId, String destinationId, Action action) {
 		return Status.UNSPECIFIED;

@@ -1,8 +1,8 @@
 package helper.implementations;
 
-import interfaces.RoleInterface;
+import interfaces.AclRole;
 
-public class TestRole implements RoleInterface {
+public class TestRole implements AclRole {
 
 	private String id;
 	
@@ -24,7 +24,7 @@ public class TestRole implements RoleInterface {
 	}
 
 	@Override
-	public boolean equals(RoleInterface role) {
+	public boolean equals(AclRole role) {
 		return id.equals(role.getId());
 	}
 	@Override

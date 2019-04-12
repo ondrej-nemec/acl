@@ -1,40 +1,32 @@
 package helper;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-
 import exception.AccessDeniedException;
-import interfaces.DestinationInterface;
-import interfaces.RoleInterface;
-import interfaces.Rules;
-import interfaces.UserInterface;
+import interfaces.AclDestination;
+import interfaces.AclRole;
+import interfaces.AclRules;
+import interfaces.AclUser;
+import logging.ILogger;
 
 public class AuthorizationHelper {
 
-	private Rules rules;
+	private AclRules rules;
 	
-	private Logger logger;
+	private final ILogger logger;
 	
-	public AuthorizationHelper(final Rules rules) {
-		this.rules = rules;
-	}
-	
-	public AuthorizationHelper(final Rules rules, Logger logger) {
+	public AuthorizationHelper(final AclRules rules, ILogger logger) {
 		this.rules = rules;
 		this.logger = logger;
 	}
 	
-	public boolean isAllowed(final UserInterface who, final DestinationInterface where, final Action what) {
-		if (logger != null)
-			logger.log(Level.FINEST, "Access required: " + who + " -> " + where + " -> " + what);
+	public boolean isAllowed(final AclUser who, final AclDestination where, final Action what) {
+		logger.debug("Access required: " + who + " -> " + where + " -> " + what);
 		
 		Status ruleUserId = rules.getRuleUserId(who.getId(), where.getId(), what);
 		Status ruleUserRank = rules.getRuleUserRank(who.getRank(), where.getId(), what);
 		Status ruleRoleId = Status.UNSPECIFIED;
 		Status ruleRoleRank = Status.UNSPECIFIED;
 		
-		for (RoleInterface r : who.getRoles()) {
+		for (AclRole r : who.getRoles()) {
 			ruleRoleId = resolveRolesStatus(
 					ruleRoleId,
 					rules.getRuleRoleId(r.getId(), where.getId(), what)
@@ -58,8 +50,7 @@ public class AuthorizationHelper {
 		if (ruleRoleRank != Status.UNSPECIFIED)
 			return resolveResult(ruleRoleRank);
 		
-		if (logger != null)
-			logger.log(Level.WARNING, "No access rule for: " + who + " -> " + where + " -> " + what); 
+		logger.warn("No access rule for: " + who + " -> " + where + " -> " + what); 
 		return false;
 	}
 	
@@ -81,7 +72,7 @@ public class AuthorizationHelper {
 		return actual;
 	}
 	
-	public void throwIfIsNotAllowed(final UserInterface who, final DestinationInterface where, final Action what) throws AccessDeniedException {
+	public void throwIfIsNotAllowed(final AclUser who, final AclDestination where, final Action what) throws AccessDeniedException {
 		if(!isAllowed(who, where, what))
 			throw new AccessDeniedException(who, where, what);
 	}

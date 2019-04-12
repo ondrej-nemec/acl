@@ -2,18 +2,18 @@ package helper.implementations;
 
 import java.util.List;
 
-import interfaces.RoleInterface;
-import interfaces.UserInterface;
+import interfaces.AclRole;
+import interfaces.AclUser;
 
-public class TestUser implements UserInterface{
+public class TestUser implements AclUser{
 
 	private String id;
 	
 	private int rank;
 	
-	private List<RoleInterface> roles;
+	private List<AclRole> roles;
 	
-	public TestUser(String id, int rank, List<RoleInterface> roles) {
+	public TestUser(String id, int rank, List<AclRole> roles) {
 		this.id = id;
 		this.rank = rank;
 		this.roles = roles;
@@ -30,12 +30,12 @@ public class TestUser implements UserInterface{
 	}
 
 	@Override
-	public List<RoleInterface> getRoles() {
+	public List<AclRole> getRoles() {
 		return roles;
 	}
 
 	@Override
-	public boolean equals(UserInterface user) {
+	public boolean equals(AclUser user) {
 		return id.equals(user.getId());
 	}
 	@Override

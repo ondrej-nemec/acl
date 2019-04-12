@@ -12,19 +12,20 @@ import exception.AccessDeniedException;
 import helper.implementations.TestDestination;
 import helper.implementations.TestRole;
 import helper.implementations.TestUser;
-import interfaces.DestinationInterface;
-import interfaces.Rules;
-import interfaces.UserInterface;
+import interfaces.AclDestination;
+import interfaces.AclRules;
+import interfaces.AclUser;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import logging.loggers.NullLogger;
 
 @RunWith(JUnitParamsRunner.class)
 public class AuthorizationHelperTest {
 
 	@Test
 	@Parameters
-	public void testIsAllowedWorks(UserInterface user, DestinationInterface dest, Action act, boolean isAllowed) {
-		AuthorizationHelper helper = new AuthorizationHelper(getRules());
+	public void testIsAllowedWorks(AclUser user, AclDestination dest, Action act, boolean isAllowed) {
+		AuthorizationHelper helper = getHelper();
 		assertEquals(
 				isAllowed,
 				helper.isAllowed(user, dest, act)
@@ -110,7 +111,7 @@ public class AuthorizationHelperTest {
 	
 	@Test(expected=AccessDeniedException.class)
 	public void testThrowIfIsNotAllowedThrows() throws AccessDeniedException {
-		AuthorizationHelper helper = new AuthorizationHelper(getRules());
+		AuthorizationHelper helper = getHelper();
 		helper.throwIfIsNotAllowed(
 				new TestUser("forbidden", 0, Arrays.asList(
 				)),
@@ -121,7 +122,7 @@ public class AuthorizationHelperTest {
 	
 	@Test
 	public void testThrowIfIsNotAllowedNotThrowsWhenUserIsAllowed() throws AccessDeniedException {
-		AuthorizationHelper helper = new AuthorizationHelper(getRules());
+		AuthorizationHelper helper = getHelper();
 		helper.throwIfIsNotAllowed(
 				new TestUser("userId", 0, Arrays.asList(
 						)),
@@ -131,8 +132,12 @@ public class AuthorizationHelperTest {
 		assertTrue(true);
 	}
 	
-	private Rules getRules() {
-		Rules mock = mock(Rules.class);
+	private AuthorizationHelper getHelper() {
+		return new AuthorizationHelper(getRules(), new NullLogger());
+	}
+
+	private AclRules getRules() {
+		AclRules mock = mock(AclRules.class);
 		
 		when(mock.getRuleUserId("undefined", "main page", Action.READ)).thenReturn(Status.UNSPECIFIED);
 		when(mock.getRuleUserRank(0, "main page", Action.READ)).thenReturn(Status.UNSPECIFIED);
