@@ -1,86 +1,25 @@
-# Access control list
+# JI - Access control layer
 
-[![](https://jitpack.io/v/ondrej-nemec/acl.svg)](https://jitpack.io/#ondrej-nemec/acl)
-[![MIT License](http://img.shields.io/badge/license-MIT-green.svg) ](https://github.com/ondrej-nemec/acl/blob/master/LICENSE)
+[![](https://jitpack.io/v/ondrej-nemec/javainit.svg)](https://jitpack.io/#ondrej-nemec/javainit)
+[![MIT License](http://img.shields.io/badge/license-MIT-green.svg) ](https://github.com/ondrej-nemec/javainit/blob/master/LICENSE)
 
-* [Description](#description)
-* [Get library](#how-to-install)
-* [Usage](#usage)
-	 * [AuthorizationHelper](#authorizationhelper)
-	 * [Interfaces](#interfaces)
-	 * [Rules](#rules)
+For checking permissions. Not for sign in/out.
 
-## Description
-Simply package providing authorizations. You just define rules and hierarchy. [See usage](#usage)
-## How to install
-### Download:
+* [Download](#include-in-your-project)
 
-<a href="https://ondrej-nemec.github.io/download/acl-1.1.1.jar" target=_blank>Download jar</a>
-### Maven:
+## Include in your project
 
-After `build` tag:
-```xml
-<repositories>
-	<repository>
-	    <id>jitpack.io</id>
-	    <url>https://jitpack.io</url>
-	</repository>
-</repositories>
+JI uses for publication <a href="https://jitpack.io/">JitPack</a>. It allows you to include this project by using Gradle or Maven.
+
+### Include using Gradle
+
+Add this line to repositories section
+```gradle
+maven { url 'https://jitpack.io' }
 ```
-And to `dependencies`:
-```xml
-<dependency>
-  <groupId>com.github.ondrej-nemec</groupId>
-  <artifactId>acl</artifactId>
-  <version>v1.1.1</version>
-</dependency>
+And this line to dependencies
+```gradle
+implementation 'com.github.ondrej-nemec:javainit:ji-acl:Tag'
 ```
 
-## Usage
-### AuthorizationHelper
-All authorization logic do `AuhtorizationHelper` class.
-```java
-new AuthorizationHelper(final Rules rules);
-new AuthorizationHelper(final Rules rules, Logger logger);
-```
-This class has two method. No matter which you choose to use (or both).
-```java
-boolean isAllowed(final UserInterface who, final DestinationInterface where, final Action what);
-
-void throwIfIsNotAllowed(final UserInterface who, final DestinationInterface where, final Action what) throws AccessDeniedException;
-```
-If logger is specified, if someone call some from previous method, FINEST will be logged with 'who', 'where' and 'what'. If no rule for user is found, WARNING will be logged.
-**Order for searching right rule for user:**
-1. rule for exactly this user
-2. rule for this user and every with higher rank
-3. rule for exactly user's role
-4. rule for user's role and every role with higher rank
-[More about Rules](#rules)
-
-### Interfaces
-This solution require that you implements some interfaces. This allow you customize function of this package.
-`UserInterface` need unique 'id'. Than has 'rank'. If you haven't got rules for hierarchy, this value could be f.e. zero. Last required attribute is `List<Role>`. **If you have no roles, let it be empty array.**
-`RoleInterface` need unique 'id'. Than has 'rank'. If you haven't got rules for hierarchy, this value could be f.e. zero.
-`DestinationInterface` need only 'id'.
-Every 'id' are strings, so it's up to you how will be represented.
-
-### Rules
-Last and very important interface is `Rules`. This interface provide information if given user has rule for given destination with given action. For this has four methods:
-```java
-default Status getRuleUserId(String userId, String destinationId, Action action) {
-	return Status.UNSPECIFIED;
-}
-	
-default Status getRuleUserRank(int userRank, String destinationId, Action action) {
-	return Status.UNSPECIFIED;
-}
-	
-default Status getRuleRoleId(String roleId, String destinationId, Action action) {
-	return Status.UNSPECIFIED;
-}
-	
-default Status getRuleRoleRank(int roleRank, String destinationId, Action action) {
-	return Status.UNSPECIFIED;
-}
-```
-As you see you could choose which feature you use. `AuthorizationHelper` asks `Rules` in given order (order is mentions above) if exist rule for given user (or role) on given destination with given action. `Rules` answer `ALLOWED` or `DISALLOWED` and `AuthorizationHelper` end with returned state (allowed/disallowed) or `UNSPECIFIED` is returned and `AuthororizationHelper` continue in searching.
+From [JI commit](https://github.com/ondrej-nemec/javainit/commit/3219afce141ffb2dbba969c5da6cf60bee952982)
